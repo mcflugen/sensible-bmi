@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import ctypes
+import os
 import pprint
 
 import numpy as np
@@ -12,7 +13,6 @@ class SensibleGrid:
     def __init__(self, bmi: Bmi, grid: int):
         self._id = grid
         self._rank = bmi.get_grid_rank(grid)
-        self._size = bmi.get_grid_size(grid)
         self._type = bmi.get_grid_type(grid)
 
         self._bmi = bmi
@@ -26,22 +26,17 @@ class SensibleGrid:
         return self._rank
 
     @property
-    def size(self) -> int:
-        return self._size
-
-    @property
     def type(self) -> str:
         return self._type
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}({self._bmi!r}, {self._id!r})"
+        return os.linesep.join([super().__repr__(), str(self)])
 
     def __str__(self) -> str:
         return pprint.pformat(
             {
                 "id": self.id,
                 "rank": self.rank,
-                "size": self.size,
                 "type": self.type,
             }
         )
@@ -79,6 +74,21 @@ class SensiblePointGrid(SensibleGrid):
     def z_of_node(self) -> NDArray[np.float_]:
         return self._z
 
+    def __str__(self) -> str:
+        with np.printoptions(threshold=6):
+            return pprint.pformat(
+                {
+                    "id": self.id,
+                    "rank": self.rank,
+                    "type": self.type,
+                    "node_count": self.node_count,
+                }
+                | {
+                    f"{dim}_of_node": getattr(self, f"{dim}_of_node")
+                    for dim in ("x", "y", "z")[: self.rank]
+                }
+            )
+
 
 class SensibleUniformRectilinearGrid(SensibleGrid):
     def __init__(self, bmi: Bmi, grid: int):
@@ -108,6 +118,18 @@ class SensibleUniformRectilinearGrid(SensibleGrid):
     def origin(self) -> tuple[float, ...]:
         return self._origin
 
+    def __str__(self) -> str:
+        return pprint.pformat(
+            {
+                "id": self.id,
+                "rank": self.rank,
+                "type": self.type,
+                "shape": self.shape,
+                "spacing": self.spacing,
+                "origin": self.origin,
+            }
+        )
+
 
 class SensibleRectilinearGrid(SensibleGrid):
     def __init__(self, bmi: Bmi, grid: int):
@@ -122,7 +144,7 @@ class SensibleRectilinearGrid(SensibleGrid):
         self._z: NDArray[np.float_]
 
         for dim, name in enumerate(("x", "y", "z")[: self.rank]):
-            array = np.empty(self._shape[dim], dtype=ctypes.c_double)
+            array = np.empty(self._shape[self.rank - dim - 1], dtype=ctypes.c_double)
             getattr(bmi, f"get_grid_{name}")(grid, array)
             array.setflags(write=False)
             self.__dict__[f"_{name}"] = array
@@ -142,6 +164,22 @@ class SensibleRectilinearGrid(SensibleGrid):
     @property
     def z_of_node(self) -> NDArray[np.float_]:
         return self._z
+
+    def __str__(self) -> str:
+        with np.printoptions(threshold=6):
+            return pprint.pformat(
+                {
+                    "id": self.id,
+                    "rank": self.rank,
+                    "type": self.type,
+                    "shape": self.shape,
+                    # "x_of_node": self.x_of_node,
+                }
+                | {
+                    f"{dim}_of_node": getattr(self, f"{dim}_of_node")
+                    for dim in ("x", "y", "z")[: self.rank]
+                }
+            )
 
 
 class SensibleStructuredQuadrilateralGrid(SensibleGrid):
@@ -179,6 +217,18 @@ class SensibleStructuredQuadrilateralGrid(SensibleGrid):
     @property
     def z_of_node(self) -> NDArray[np.float_]:
         return self._z
+
+    def __str__(self) -> str:
+        with np.printoptions(threshold=6):
+            return pprint.pformat(
+                {
+                    "id": self.id,
+                    "rank": self.rank,
+                    "type": self.type,
+                    "shape": self.shape,
+                    "x_of_node": self.x_of_node,
+                }
+            )
 
 
 class SensibleUnstructuredGrid(SensibleGrid):
@@ -256,6 +306,18 @@ class SensibleUnstructuredGrid(SensibleGrid):
     @property
     def face_edges(self) -> NDArray[np.float_]:
         return self._face_edges
+
+    def __str__(self) -> str:
+        return pprint.pformat(
+            {
+                "id": self.id,
+                "rank": self.rank,
+                "type": self.type,
+                "node_count": self.node_count,
+                "edge_count": self.edge_count,
+                "face_count": self.face_count,
+            }
+        )
 
 
 _GRID_CLASS = {

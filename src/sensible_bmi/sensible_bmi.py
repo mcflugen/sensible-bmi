@@ -9,6 +9,9 @@ from sensible_bmi._grid import SensibleGrid
 from sensible_bmi._time import SensibleTime
 from sensible_bmi._utils import as_cwd
 from sensible_bmi._utils import is_initialized_or_raise
+from sensible_bmi._var import SensibleInputOutputVar
+from sensible_bmi._var import SensibleInputVar
+from sensible_bmi._var import SensibleOutputVar
 from sensible_bmi._var import SensibleVar
 
 
@@ -54,7 +57,18 @@ class SensibleBmi:
         )
 
         self._var = MappingProxyType(
-            {name: SensibleVar(self._bmi, name) for name in sorted(all_vars)}
+            {
+                name: SensibleOutputVar(self._bmi, name)
+                for name in self.output_var_names - self.input_var_names
+            }
+            | {
+                name: SensibleInputVar(self._bmi, name)
+                for name in self.input_var_names - self.output_var_names
+            }
+            | {
+                name: SensibleInputOutputVar(self._bmi, name)
+                for name in self.output_var_names & self.input_var_names
+            }
         )
 
         self._time = SensibleTime(self._bmi)

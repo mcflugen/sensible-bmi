@@ -9,7 +9,7 @@ Let's face it, though, the BMI can be somewhat cumbersome when used directly by 
 As an example of this, the following code is what is required to get an array of
 values from a model that implements a BMI.
 
-```pycon
+```python
 >>> dtype = bmi_model.get_var_type(var_name)
 >>> itemsize = bmi_model.get_var_itemsize(var_name)
 >>> nbytes = bmi_model.get_var_nbytes(var_name)
@@ -32,7 +32,7 @@ with a *SensibleBmi*, the above code becomes,
 
 Wrap a class that exposes a BMI,
 
-```pycon
+```python
 >>> from sensible_bmi.sensible_bmi import make_sensible
 >>> EzBmi = make_sensible("EzBmi", MyBMI)
 ```

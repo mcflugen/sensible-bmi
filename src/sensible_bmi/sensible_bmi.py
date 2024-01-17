@@ -17,6 +17,20 @@ from sensible_bmi._var import SensibleVar
 
 
 def make_sensible(class_name: str, bmi_class: type[Bmi]) -> type[SensibleBmi]:
+    """Give a BMI component a more sensible interface.
+
+    Parameters
+    ----------
+    class_name : str
+        The name of the new class.
+    bmi_class : type
+        The BMI class to wrap.
+
+    Returns
+    -------
+    type
+        A new class that wraps the BMI class.
+    """
     return type(class_name, (SensibleBmi,), {"_cls": bmi_class})
 
 
@@ -38,6 +52,17 @@ class SensibleBmi:
         self._output_var_names: frozenset[str]
 
     def initialize(self, filepath: str | None = None, where: str | None = ".") -> None:
+        """Initialize component for timestepping.
+
+        Parameters
+        ----------
+        filepath : str, optional
+            The name of the component's input file.
+        where : str, optional
+            The path to the location where this component will be run. If not
+            provided, use the folder in which *filepath* sits. If *filepath* is also
+            not provided, use the current working directory.
+        """
         try:
             self._initdir
         except AttributeError:
@@ -97,6 +122,7 @@ class SensibleBmi:
             return self.bmi.update()
 
     def finalize(self) -> None:
+        """Call teardown methods putting the component in a state to be initialized."""
         try:
             self._initdir
         except AttributeError:
@@ -108,6 +134,7 @@ class SensibleBmi:
 
     @property
     def bmi(self) -> Bmi:
+        """The underlying BMI of the component."""
         return self._bmi
 
     @property
@@ -119,11 +146,13 @@ class SensibleBmi:
     @property
     @is_initialized_or_raise
     def grid(self) -> MappingProxyType[int, SensibleGrid]:
+        """Descriptions of the component's grids."""
         return self._grid
 
     @property
     @is_initialized_or_raise
     def var(self) -> MappingProxyType[str, SensibleVar]:
+        """The component's input and output variables."""
         return self._var
 
     @property

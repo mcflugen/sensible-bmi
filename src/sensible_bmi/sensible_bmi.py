@@ -63,14 +63,12 @@ class SensibleBmi:
             provided, use the folder in which *filepath* sits. If *filepath* is also
             not provided, use the current working directory.
         """
-        try:
-            self._initdir
-        except AttributeError:
+        if hasattr(self, "_initdir"):
             raise SensibleError(
                 "Unable to initialize. Component is already initialized."
                 " If you would like to re-initialize this component, try"
                 " calling finalize() and then calling initialize()."
-            ) from None
+            )
 
         filepath = "" if filepath is None else os.path.abspath(filepath)
 
@@ -79,15 +77,15 @@ class SensibleBmi:
         else:
             where = "." if where is None else where
 
-        self._initdir = os.path.abspath(where)
-        with as_cwd(self._initdir):
+        init_dir = os.path.abspath(where)
+        with as_cwd(init_dir):
             self.bmi.initialize(filepath)
 
         self._name = self.bmi.get_component_name()
         self._input_var_names = frozenset(self._bmi.get_input_var_names())
         self._output_var_names = frozenset(self._bmi.get_output_var_names())
 
-        all_vars = self.output_var_names | self.input_var_names
+        all_vars = self._output_var_names | self._input_var_names
         all_grids = {
             self._bmi.get_var_grid(name)
             for name in all_vars
@@ -101,19 +99,20 @@ class SensibleBmi:
         self._var = MappingProxyType(
             {
                 name: SensibleOutputVar(self._bmi, name)
-                for name in self.output_var_names - self.input_var_names
+                for name in self._output_var_names - self._input_var_names
             }
             | {
                 name: SensibleInputVar(self._bmi, name)
-                for name in self.input_var_names - self.output_var_names
+                for name in self._input_var_names - self._output_var_names
             }
             | {
                 name: SensibleInputOutputVar(self._bmi, name)
-                for name in self.output_var_names & self.input_var_names
+                for name in self._output_var_names & self._input_var_names
             }
         )
 
         self._time = SensibleTime(self._bmi)
+        self._initdir = init_dir
 
     @is_initialized_or_raise
     def update(self) -> None:

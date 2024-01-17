@@ -4,6 +4,7 @@ import os
 from types import MappingProxyType
 
 from bmipy.bmi import Bmi
+from sensible_bmi._errors import SensibleError
 from sensible_bmi._grid import sensible_grid
 from sensible_bmi._grid import SensibleGrid
 from sensible_bmi._time import SensibleTime
@@ -24,7 +25,7 @@ class SensibleBmi:
 
     def __init__(self) -> None:
         if self._cls is None:
-            raise RuntimeError()
+            raise RuntimeError("There is no BMI class associated with this class.")
 
         self._bmi = self._cls()
 
@@ -36,7 +37,23 @@ class SensibleBmi:
         self._input_var_names: frozenset[str]
         self._output_var_names: frozenset[str]
 
-    def initialize(self, filepath: str | None = None, where: str = ".") -> None:
+    def initialize(self, filepath: str | None = None, where: str | None = ".") -> None:
+        try:
+            self._initdir
+        except AttributeError:
+            raise SensibleError(
+                "Unable to initialize. Component is already initialized."
+                " If you would like to re-initialize this component, try"
+                " calling finalize() and then calling initialize()."
+            ) from None
+
+        filepath = "" if filepath is None else os.path.abspath(filepath)
+
+        if filepath and where is None:
+            where = os.path.dirname(filepath)
+        else:
+            where = "." if where is None else where
+
         self._initdir = os.path.abspath(where)
         with as_cwd(self._initdir):
             self.bmi.initialize(filepath)

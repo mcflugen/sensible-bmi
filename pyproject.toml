@@ -55,6 +55,16 @@ content-type = "text/markdown"
 [tool.setuptools.dynamic.version]
 attr = "sensible_bmi._version.__version__"
 
+[project.optional-dependencies]
+dev = [
+    "nox",
+]
+testing = [
+    "coveralls",
+    "pytest",
+    "pytest-cov",
+]
+
 [tool.setuptools.packages.find]
 where = [
     "src",

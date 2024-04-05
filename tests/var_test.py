@@ -4,6 +4,7 @@ from unittest.mock import Mock
 
 import numpy as np
 import pytest
+from numpy.testing import assert_array_equal
 from sensible_bmi._var import SensibleInputOutputVar
 from sensible_bmi._var import SensibleInputVar
 from sensible_bmi._var import SensibleOutputVar
@@ -60,7 +61,8 @@ def test_var_out_structured_data(cls, dtype):
     assert var.size == 10
     assert var.itemsize == dt.itemsize
     assert var.nbytes == dt.itemsize * 10
-    assert all(var.get() == values)
+    # assert all(var.get() == values)
+    assert_array_equal(var.get(), values)
     # assert all(var.data == values)
     # with pytest.raises(ValueError):
     #     var.data[0] = 1.0

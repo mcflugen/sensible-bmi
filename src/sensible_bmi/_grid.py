@@ -112,7 +112,7 @@ class SensibleUniformRectilinearGrid(SensibleGrid):
 
     @property
     def spacing(self) -> tuple[float, ...]:
-        return self._shape
+        return self._spacing
 
     @property
     def origin(self) -> tuple[float, ...]:
@@ -143,8 +143,9 @@ class SensibleRectilinearGrid(SensibleGrid):
         self._y: NDArray[np.float_]
         self._z: NDArray[np.float_]
 
-        for dim, name in enumerate(("x", "y", "z")[: self.rank]):
-            array = np.empty(self._shape[self.rank - dim - 1], dtype=ctypes.c_double)
+        dims = ("x", "y", "z")[self.rank - 1 :: -1]
+        for dim, name in enumerate(dims):
+            array = np.empty(self._shape[dim], dtype=ctypes.c_double)
             getattr(bmi, f"get_grid_{name}")(grid, array)
             array.setflags(write=False)
             self.__dict__[f"_{name}"] = array

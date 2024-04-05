@@ -9,7 +9,7 @@ from bmipy.bmi import Bmi
 from numpy.typing import NDArray
 
 
-def _normalize_dtype(dtype, itemsize):
+def _normalize_dtype(dtype: str, itemsize: int) -> str:
     fields = [field.strip() for field in dtype.split(",")]
     if len(fields) == 1:
         dtype = fields[0]
@@ -19,9 +19,7 @@ def _normalize_dtype(dtype, itemsize):
             dtype = f"{dtype}{itemsize}"
         return str(np.dtype(dtype))
     else:
-        return ", ".join(
-            str(np.dtype(field)) for field in fields
-        )
+        return ", ".join(str(np.dtype(field)) for field in fields)
 
 
 class SensibleVar:
@@ -100,9 +98,9 @@ class SensibleInputVar(SensibleVar):
 
 
 class SensibleOutputVar(SensibleVar):
-    @property
-    def data(self) -> NDArray[Any]:
-        return self._data_read_only
+    # @property
+    # def data(self) -> NDArray[Any]:
+    #     return self._data_read_only
 
     def get(self) -> NDArray[Any]:
         values = self.empty()

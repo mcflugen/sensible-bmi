@@ -60,8 +60,7 @@ def test_var_out_structured_data(cls, dtype):
     assert var.size == 10
     assert var.itemsize == dt.itemsize
     assert var.nbytes == dt.itemsize * 10
-    assert all(var.get() == values)
-    # assert all(var.data == values)
+    assert var.get().tobytes() == values.tobytes()
     # with pytest.raises(ValueError):
     #     var.data[0] = 1.0
 

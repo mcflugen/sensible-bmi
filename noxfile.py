@@ -38,6 +38,7 @@ def docs_build(session: nox.Session) -> None:
     session.install(".", "-r", "requirements-docs.in")
 
     os.makedirs("build", exist_ok=True)
+    docs_build_api(session)
     session.run(
         "sphinx-build",
         *("-j", "auto"),
@@ -48,3 +49,26 @@ def docs_build(session: nox.Session) -> None:
         "build/html",
     )
     session.log("generated docs at build/html")
+
+
+@nox.session(name="docs-build-api")
+def docs_build_api(session: nox.Session) -> None:
+    docs_dir = "docs/"
+    generated_dir = os.path.join(docs_dir, "generated", "api")
+
+    session.install(".", "-r", "requirements-docs.in")
+
+    session.log(f"generating api docs in {generated_dir}")
+    session.run(
+        "sphinx-apidoc",
+        "-e",
+        "-force",
+        "--no-toc",
+        "--module-first",
+        *("-d", "2"),
+        # f"--templatedir={docs_dir / '_templates'}",
+        *("-o", generated_dir),
+        "src/sensible_bmi",
+        "*.pyx",
+        "*.so",
+    )

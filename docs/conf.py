@@ -46,7 +46,7 @@ modindex_common_prefix = ["sensible_bmi."]
 todo_include_todos = False
 html_theme = "furo"
 html_title = "sensible_bmi"
-# html_logo = "_static/csdms-logo.png"
+html_logo = "_static/logo.svg"
 html_theme_options = {
     "announcement": None,
     "source_repository": "https://github.com/mcflugen/sensible_bmi/",

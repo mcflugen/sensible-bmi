@@ -30,3 +30,21 @@ def lint(session: nox.Session) -> None:
     """Look for lint."""
     session.install("pre-commit")
     session.run("pre-commit", "run", "--all-files")
+
+
+@nox.session(name="docs-build")
+def docs_build(session: nox.Session) -> None:
+    """Build the docs."""
+    session.install(".", "-r", "requirements-docs.in")
+
+    os.makedirs("build", exist_ok=True)
+    session.run(
+        "sphinx-build",
+        *("-j", "auto"),
+        *("-b", "html"),
+        "-W",
+        "--keep-going",
+        "docs/",
+        "build/html",
+    )
+    session.log("generated docs at build/html")

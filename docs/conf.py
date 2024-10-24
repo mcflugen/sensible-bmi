@@ -8,6 +8,7 @@ docs_dir = os.path.dirname(__file__)
 
 extensions = [
     "myst_parser",
+    "nbsphinx",
     "sphinx.ext.autodoc",
     "sphinx.ext.intersphinx",
     "sphinx.ext.todo",
@@ -96,4 +97,4 @@ intersphinx_mapping = {
 
 myst_enable_extensions = ["colon_fence"]
 
-nbsphinx_execute = "never"
+nbsphinx_execute = "always"

@@ -27,7 +27,7 @@ def is_initialized_or_raise(func: Callable[..., Any]) -> Callable[..., Any]:
 
 
 @contextlib.contextmanager
-def as_cwd(path: str) -> Generator[str, None, None]:
+def as_cwd(path: str) -> Generator[str]:
     prev_cwd = os.getcwd()
     os.chdir(path)
     yield prev_cwd

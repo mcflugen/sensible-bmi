@@ -1,0 +1,18 @@
+# bmi-wavewatch3
+# ecmwflibs
+bmi-topography
+cfgrib<0.9.14
+dask
+furo
+git+https://github.com/csdms/bmi-example-python.git
+git+https://github.com/csdms/bmi-wavewatch3.git@mcflugen/update-ci
+git+https://github.com/gantian127/soilgrids.git
+jupyter
+matplotlib
+myst-parser
+nbsphinx
+sphinx-copybutton
+sphinx-inline-tabs
+sphinx>=4
+sphinx_design
+sphinxcontrib.towncrier

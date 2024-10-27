@@ -63,7 +63,8 @@ def lint(session: nox.Session) -> None:
 @nox.session(name="docs-build")
 def docs_build(session: nox.Session) -> None:
     """Build the docs."""
-    session.install(".", "-r", "requirements-docs.in")
+    session.install("-r", "requirements-docs.in")
+    install(session)
 
     os.makedirs("build", exist_ok=True)
     docs_build_api(session)

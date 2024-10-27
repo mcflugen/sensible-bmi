@@ -38,8 +38,8 @@ def install(session: nox.Session) -> None:
 @nox.session
 def test(session: nox.Session) -> None:
     """Run the tests."""
-    install(session)
     session.install("-r", "requirements-testing.in", "-r", "requirements.in")
+    install(session)
 
     session.run(
         "coverage",

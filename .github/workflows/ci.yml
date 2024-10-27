@@ -83,7 +83,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
   docs:
-    needs: check-tag
+    needs: build-sdist
     strategy:
       matrix:
         os: [macos-latest]
@@ -104,6 +104,13 @@ jobs:
           miniforge-version: latest
           auto-update-conda: true
 
+      - uses: actions/download-artifact@v4
+        name: Download build artifacts
+        with:
+          pattern: "build-*"
+          merge-multiple: true
+          path: ${{ github.workspace }}/dist
+
       - name: Display structure of downloaded files
         run: ls -R
 
@@ -116,8 +123,7 @@ jobs:
       - name: Build documentation
         run: |
           pip install nox
-          pip install -r requirements-docs.txt
-          nox -s docs-build --no-venv
+          nox -s docs-build --no-venv -- dist
 
       - name: Upload static files as artifact
         id: deployment

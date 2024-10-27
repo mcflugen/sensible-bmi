@@ -1,0 +1,4 @@
+[wavewatch3]
+source = "multigrid"
+grid = "glo_30m"
+date = "2010-05-22"

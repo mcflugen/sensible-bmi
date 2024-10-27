@@ -81,3 +81,62 @@ jobs:
         uses: codecov/codecov-action@v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+
+  docs:
+    needs: check-tag
+    strategy:
+      matrix:
+        os: [macos-latest]
+        python-version: ["3.12"]
+
+    runs-on: ${{ matrix.os }}
+
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          python-version: ${{ matrix.python-version }}
+          miniforge-variant: Miniforge3
+          miniforge-version: latest
+          auto-update-conda: true
+
+      - name: Display structure of downloaded files
+        run: ls -R
+
+      - name: install and check pandoc
+        run: |
+          conda install pandoc -c conda-forge
+          pandoc --help
+          pandoc --version
+
+      - name: Build documentation
+        run: |
+          pip install nox
+          pip install -r requirements-docs.txt
+          nox -s docs-build --no-venv
+
+      - name: Upload static files as artifact
+        id: deployment
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/html/
+
+  deploy-docs:
+    needs: docs
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

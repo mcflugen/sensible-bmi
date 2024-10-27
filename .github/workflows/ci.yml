@@ -123,7 +123,7 @@ jobs:
       - name: Build documentation
         run: |
           pip install nox
-          nox -s docs-build --no-venv -- dist
+          nox -s docs-build -- dist
 
       - name: Upload static files as artifact
         id: deployment

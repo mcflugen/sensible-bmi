@@ -171,3 +171,32 @@ bmi_model.get_time_units()
 ```
 ::::
 :::::
+
+
+```{toctree}
+:hidden: true
+:maxdepth: 1
+
+install
+API <generated/api/sensible_bmi>
+```
+```{toctree}
+:caption: Examples
+:hidden: true
+:maxdepth: 1
+
+BmiHeat <examples/bmi-heat>
+BmiTopography <examples/bmi-topography>
+BmiWaveWatch3 <examples/bmi-wavewatch3>
+BmiSoilGrids <examples/bmi-soilgrids>
+```
+
+```{toctree}
+:caption: About
+:hidden: true
+:maxdepth: 1
+
+about/changes
+Contributors <about/authors>
+License <about/license>
+```

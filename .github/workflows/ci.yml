@@ -75,7 +75,7 @@ jobs:
       - name: Test
         run: |
           pip install nox
-          nox --non-interactive --error-on-missing-interpreter -s test -- dist
+          nox --non-interactive --error-on-missing-interpreter -s test -- dist/*.tar.gz
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
@@ -123,7 +123,7 @@ jobs:
       - name: Build documentation
         run: |
           pip install nox
-          nox -s docs-build -- dist
+          nox -s docs-build -- dist/*.tar.gz
 
       - name: Upload static files as artifact
         id: deployment

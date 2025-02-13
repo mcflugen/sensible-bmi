@@ -48,9 +48,9 @@ class SensiblePointGrid(SensibleGrid):
 
         self._node_count = bmi.get_grid_node_count(grid)
 
-        self._x: NDArray[np.float_]
-        self._y: NDArray[np.float_]
-        self._z: NDArray[np.float_]
+        self._x: NDArray[np.float64]
+        self._y: NDArray[np.float64]
+        self._z: NDArray[np.float64]
 
         for dim in ("x", "y", "z")[: self.rank]:
             array = np.empty(self._node_count, dtype=ctypes.c_double)
@@ -63,15 +63,15 @@ class SensiblePointGrid(SensibleGrid):
         return self._node_count
 
     @property
-    def x_of_node(self) -> NDArray[np.float_]:
+    def x_of_node(self) -> NDArray[np.float64]:
         return self._x
 
     @property
-    def y_of_node(self) -> NDArray[np.float_]:
+    def y_of_node(self) -> NDArray[np.float64]:
         return self._y
 
     @property
-    def z_of_node(self) -> NDArray[np.float_]:
+    def z_of_node(self) -> NDArray[np.float64]:
         return self._z
 
     def __str__(self) -> str:
@@ -139,9 +139,9 @@ class SensibleRectilinearGrid(SensibleGrid):
         bmi.get_grid_shape(grid, shape)
         self._shape: tuple[int, ...] = tuple(shape)
 
-        self._x: NDArray[np.float_]
-        self._y: NDArray[np.float_]
-        self._z: NDArray[np.float_]
+        self._x: NDArray[np.float64]
+        self._y: NDArray[np.float64]
+        self._z: NDArray[np.float64]
 
         dims = ("x", "y", "z")[self.rank - 1 :: -1]
         for dim, name in enumerate(dims):
@@ -155,15 +155,15 @@ class SensibleRectilinearGrid(SensibleGrid):
         return self._shape
 
     @property
-    def x_of_node(self) -> NDArray[np.float_]:
+    def x_of_node(self) -> NDArray[np.float64]:
         return self._x
 
     @property
-    def y_of_node(self) -> NDArray[np.float_]:
+    def y_of_node(self) -> NDArray[np.float64]:
         return self._y
 
     @property
-    def z_of_node(self) -> NDArray[np.float_]:
+    def z_of_node(self) -> NDArray[np.float64]:
         return self._z
 
     def __str__(self) -> str:
@@ -193,9 +193,9 @@ class SensibleStructuredQuadrilateralGrid(SensibleGrid):
 
         self._node_count = np.prod(shape)
 
-        self._x: NDArray[np.float_]
-        self._y: NDArray[np.float_]
-        self._z: NDArray[np.float_]
+        self._x: NDArray[np.float64]
+        self._y: NDArray[np.float64]
+        self._z: NDArray[np.float64]
 
         for dim in ("x", "y", "z")[: self.rank]:
             array = np.empty(self._node_count, dtype=ctypes.c_double)
@@ -208,15 +208,15 @@ class SensibleStructuredQuadrilateralGrid(SensibleGrid):
         return self._shape
 
     @property
-    def x_of_node(self) -> NDArray[np.float_]:
+    def x_of_node(self) -> NDArray[np.float64]:
         return self._x
 
     @property
-    def y_of_node(self) -> NDArray[np.float_]:
+    def y_of_node(self) -> NDArray[np.float64]:
         return self._y
 
     @property
-    def z_of_node(self) -> NDArray[np.float_]:
+    def z_of_node(self) -> NDArray[np.float64]:
         return self._z
 
     def __str__(self) -> str:
@@ -240,9 +240,9 @@ class SensibleUnstructuredGrid(SensibleGrid):
         self._edge_count = bmi.get_grid_edge_count(grid)
         self._face_count = bmi.get_grid_face_count(grid)
 
-        self._x: NDArray[np.float_]
-        self._y: NDArray[np.float_]
-        self._z: NDArray[np.float_]
+        self._x: NDArray[np.float64]
+        self._y: NDArray[np.float64]
+        self._z: NDArray[np.float64]
 
         for dim in ("x", "y", "z")[: self.rank]:
             array = np.empty(self._node_count, dtype=ctypes.c_double)
@@ -281,15 +281,15 @@ class SensibleUnstructuredGrid(SensibleGrid):
         return self._face_count
 
     @property
-    def x_of_node(self) -> NDArray[np.float_]:
+    def x_of_node(self) -> NDArray[np.float64]:
         return self._x
 
     @property
-    def y_of_node(self) -> NDArray[np.float_]:
+    def y_of_node(self) -> NDArray[np.float64]:
         return self._y
 
     @property
-    def z_of_node(self) -> NDArray[np.float_]:
+    def z_of_node(self) -> NDArray[np.float64]:
         return self._z
 
     @property
@@ -297,15 +297,15 @@ class SensibleUnstructuredGrid(SensibleGrid):
         return self._nodes_per_face
 
     @property
-    def edge_nodes(self) -> NDArray[np.float_]:
+    def edge_nodes(self) -> NDArray[np.float64]:
         return self._edge_nodes
 
     @property
-    def face_nodes(self) -> NDArray[np.float_]:
+    def face_nodes(self) -> NDArray[np.float64]:
         return self._face_nodes
 
     @property
-    def face_edges(self) -> NDArray[np.float_]:
+    def face_edges(self) -> NDArray[np.float64]:
         return self._face_edges
 
     def __str__(self) -> str:

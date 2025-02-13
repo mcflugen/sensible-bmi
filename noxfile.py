@@ -13,9 +13,9 @@ def test(session: nox.Session) -> None:
     """Run the tests."""
     session.install(".[testing]")
 
-    session.run("pytest", "--cov-branch", f"--cov-report=xml:{ROOT}/coverage.xml")
+    session.run("coverage", "run", "--branch", "--module", "pytest")
     session.run("coverage", "report", "--ignore-errors", "--show-missing")
-
+    session.run("coverage", "xml", "-o", "coverage.xml")
 
 @nox.session
 def lint(session: nox.Session) -> None:

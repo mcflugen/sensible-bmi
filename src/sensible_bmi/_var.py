@@ -6,6 +6,7 @@ from typing import Any
 
 import numpy as np
 from bmipy.bmi import Bmi
+from numpy.typing import ArrayLike
 from numpy.typing import NDArray
 
 
@@ -70,6 +71,15 @@ class SensibleVar:
     def empty(self) -> NDArray[Any]:
         return np.empty(self._size, dtype=self._type)
 
+    def zeros(self) -> NDArray[Any]:
+        return np.zeros(self._size, dtype=self._type)
+
+    def ones(self) -> NDArray[Any]:
+        return np.ones(self._size, dtype=self._type)
+
+    def full(self, fill_value: ArrayLike) -> NDArray[Any]:
+        return np.full(self._size, fill_value, dtype=self._type)
+
     def __repr__(self) -> str:
         return os.linesep.join(
             [f"{self.__class__.__name__}({self._bmi!r}, {self._name!r})", str(self)]
@@ -91,7 +101,8 @@ class SensibleVar:
 
 
 class SensibleInputVar(SensibleVar):
-    def set(self, values: NDArray[Any]) -> None:
+    def set(self, values: ArrayLike) -> None:
+        values = np.asarray(values).reshape(-1)
         self._bmi.set_value(
             self._name, np.broadcast_to(values, self._nbytes // self.itemsize)
         )

@@ -17,6 +17,7 @@ def test(session: nox.Session) -> None:
     session.run("coverage", "report", "--ignore-errors", "--show-missing")
     session.run("coverage", "xml", "-o", "coverage.xml")
 
+
 @nox.session
 def lint(session: nox.Session) -> None:
     """Look for lint."""

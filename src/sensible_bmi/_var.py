@@ -101,7 +101,8 @@ class SensibleVar:
 
 
 class SensibleInputVar(SensibleVar):
-    def set(self, values: NDArray[Any]) -> None:
+    def set(self, values: ArrayLike) -> None:
+        values = np.asarray(values).reshape(-1)
         self._bmi.set_value(
             self._name, np.broadcast_to(values, self._nbytes // self.itemsize)
         )

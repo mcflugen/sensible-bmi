@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import math
 import pprint
+from functools import total_ordering
 
 from bmipy.bmi import Bmi
 
 
+@total_ordering
 class SensibleTime:
     def __init__(self, bmi: Bmi):
         self._units = bmi.get_time_units()
@@ -47,3 +50,19 @@ class SensibleTime:
                 "current": self.current,
             }
         )
+
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, SensibleTime):
+            return math.isclose(self.current, other.current)
+        elif isinstance(other, (int, float)):
+            return math.isclose(self.current, other)
+        else:
+            return NotImplemented
+
+    def __lt__(self, other: object) -> bool:
+        if isinstance(other, SensibleTime):
+            return self.current < other.current
+        elif isinstance(other, (float, int)):
+            return self.current < other
+        else:
+            return NotImplemented

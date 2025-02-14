@@ -4,6 +4,7 @@ from unittest.mock import Mock
 
 import numpy as np
 import pytest
+from numpy.testing import assert_array_equal
 from sensible_bmi._var import SensibleInputOutputVar
 from sensible_bmi._var import SensibleInputVar
 from sensible_bmi._var import SensibleOutputVar
@@ -107,3 +108,39 @@ def test_var_in(cls, dtype):
     # with pytest.raises(AttributeError):
     #     var.data
     var.set(values)
+
+
+@pytest.mark.parametrize("cls", (SensibleInputOutputVar, SensibleOutputVar))
+@pytest.mark.parametrize(
+    "dtype", ("float", "int", "uint", "uint8", "f", "B", "bool", "complex")
+)
+@pytest.mark.parametrize("func", ("zeros", "ones"))
+def test_zeros_and_ones(cls, dtype, func):
+    dt = np.dtype(dtype)
+    values = np.empty(10, dtype=dt)
+    var = cls(
+        bmi_var(values, itemsize=dt.itemsize, dtype=dtype, nbytes=dt.itemsize * 10),
+        "bar",
+    )
+
+    actual = getattr(var, func)()
+    assert actual.size == 10
+    assert actual.itemsize == dt.itemsize
+    assert actual.nbytes == dt.itemsize * 10
+    assert np.all(actual == (1 if func == "ones" else 0))
+
+
+@pytest.mark.parametrize("cls", (SensibleInputOutputVar, SensibleOutputVar))
+@pytest.mark.parametrize(
+    "dtype", ("float", "int", "uint", "uint8", "f4,i2", "f", "B", "bool", "complex")
+)
+def test_full(cls, dtype):
+    dt = np.dtype(dtype)
+    values = np.empty(10, dtype=dt)
+    var = cls(
+        bmi_var(values, itemsize=dt.itemsize, dtype=dtype, nbytes=dt.itemsize * 10),
+        "bar",
+    )
+
+    assert_array_equal(var.full(1), var.ones())
+    assert_array_equal(var.full(0), var.zeros())

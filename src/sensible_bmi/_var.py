@@ -73,6 +73,9 @@ class SensibleVar:
     def zeros(self) -> NDArray[Any]:
         return np.zeros(self._size, dtype=self._type)
 
+    def ones(self) -> NDArray[Any]:
+        return np.ones(self._size, dtype=self._type)
+
     def __repr__(self) -> str:
         return os.linesep.join(
             [f"{self.__class__.__name__}({self._bmi!r}, {self._name!r})", str(self)]

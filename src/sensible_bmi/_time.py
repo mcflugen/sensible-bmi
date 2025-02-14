@@ -9,6 +9,8 @@ from bmipy.bmi import Bmi
 
 @total_ordering
 class SensibleTime:
+    __slots__ = ("_units", "_start", "_stop", "_step", "_bmi")
+
     def __init__(self, bmi: Bmi):
         self._units = bmi.get_time_units()
         self._start = bmi.get_start_time()

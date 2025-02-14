@@ -13,7 +13,14 @@ def test(session: nox.Session) -> None:
     """Run the tests."""
     session.install(".[testing]")
 
-    session.run("coverage", "run", "--branch", "--module", "pytest")
+    session.run(
+        "coverage",
+        "run",
+        "--branch",
+        "--source=sensible_bmi,tests",
+        "--module",
+        "pytest",
+    )
     session.run("coverage", "report", "--ignore-errors", "--show-missing")
     session.run("coverage", "xml", "-o", "coverage.xml")
 

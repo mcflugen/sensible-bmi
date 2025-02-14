@@ -6,6 +6,7 @@ from typing import Any
 
 import numpy as np
 from bmipy.bmi import Bmi
+from numpy.typing import ArrayLike
 from numpy.typing import NDArray
 
 
@@ -75,6 +76,9 @@ class SensibleVar:
 
     def ones(self) -> NDArray[Any]:
         return np.ones(self._size, dtype=self._type)
+
+    def full(self, fill_value: ArrayLike) -> NDArray[Any]:
+        return np.full(self._size, fill_value, dtype=self._type)
 
     def __repr__(self) -> str:
         return os.linesep.join(

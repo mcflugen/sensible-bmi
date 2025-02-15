@@ -134,8 +134,8 @@ sensible_bmi.var[var_name].grid.spacing
 grid_id = bmi_model.get_var_grid(var_name)
 rank = bmi_model.get_grid_rank(grid_id)
 
-shape = np.ndarray(rank, dtype=int)
-spacing = np.ndarray(rank, dtype=float)
+shape = np.empty(rank, dtype=int)
+spacing = np.empty(rank, dtype=float)
 
 bmi_model.get_grid_shape(grid_id, shape)
 bmi_model.get_grid_spacing(grid_id, spacing)

@@ -11,6 +11,16 @@ repos:
     minimum_pre_commit_version: 2.9.2
     require_serial: true
     types_or: [python, pyi]
+  - id: black-jupyter
+    name: black-jupyter
+    description:
+      "Black: The uncompromising Python code formatter (with Jupyter Notebook support)"
+    entry: black
+    language: python
+    minimum_pre_commit_version: 2.9.2
+    require_serial: true
+    types_or: [python, pyi, jupyter]
+    additional_dependencies: [".[jupyter]"]
 
 - repo: https://github.com/pycqa/flake8
   rev: 7.1.1
@@ -71,3 +81,25 @@ repos:
   - id: mypy
     language_version: python3.12
     files: src/.*\.py$
+
+- repo: https://github.com/mcflugen/heartfelt-hooks
+  rev: v0.3.3
+  hooks:
+  - id: check-whitespace
+  - id: check-heading-levels
+
+- repo: https://github.com/nbQA-dev/nbQA
+  rev: 1.9.1
+  hooks:
+    - id: nbqa-pyupgrade
+      args: ["--py310-plus"]
+    - id: nbqa-isort
+    - id: nbqa-flake8
+      args: ["--extend-ignore=E402"]
+
+- repo: https://github.com/kynan/nbstripout
+  rev: 0.8.1
+  hooks:
+    - id: nbstripout
+      description: Strip output from jupyter notebooks
+      args: [--drop-empty-cells]

@@ -91,6 +91,19 @@ def test_var_out(cls):
     assert array.size == var.size
 
 
+@pytest.mark.parametrize("cls", (SensibleInputOutputVar, SensibleOutputVar))
+def test_var_out_with_keyword(cls):
+    expected = np.zeros(10)
+    var = cls(bmi_var(expected, itemsize=8, dtype="float64", nbytes=8 * 10), "bar")
+
+    actual = var.empty()
+    actual.fill(1.0)
+    rtn = var.get(out=actual)
+
+    assert np.allclose(actual, expected)
+    assert rtn is actual
+
+
 @pytest.mark.parametrize("cls", (SensibleInputVar,))
 @pytest.mark.parametrize(
     "dtype", ("float", "int", "uint", "uint8", "f4,i2", "f", "B", "bool", "complex")

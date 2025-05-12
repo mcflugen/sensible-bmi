@@ -113,10 +113,11 @@ class SensibleOutputVar(SensibleVar):
     # def data(self) -> NDArray[Any]:
     #     return self._data_read_only
 
-    def get(self) -> NDArray[Any]:
-        values = self.empty()
-        self._bmi.get_value(self._name, values)
-        return values
+    def get(self, out: NDArray[Any] | None = None) -> NDArray[Any]:
+        if out is None:
+            out = self.empty()
+        self._bmi.get_value(self._name, out)
+        return out
 
     def __str__(self) -> str:
         # with np.printoptions(threshold=6):

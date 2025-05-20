@@ -34,6 +34,12 @@ class SensibleVar:
         self._nbytes = bmi.get_var_nbytes(name)
         self._size = self._nbytes // self._itemsize
 
+        if self._grid is not None and bmi.get_grid_type(self._grid) in (
+            "scalar",
+            "vector",
+        ):
+            self._location = None
+
         self._bmi = bmi
 
     @property

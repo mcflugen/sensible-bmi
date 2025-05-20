@@ -42,6 +42,11 @@ class SensibleGrid:
         )
 
 
+class SensibleScalarGrid(SensibleGrid):
+    def __init__(self, bmi: Bmi, grid: int):
+        super().__init__(bmi, grid)
+
+
 class SensiblePointGrid(SensibleGrid):
     def __init__(self, bmi: Bmi, grid: int):
         super().__init__(bmi, grid)
@@ -327,6 +332,8 @@ _GRID_CLASS = {
     "structured_quadrilateral": SensibleStructuredQuadrilateralGrid,
     "rectilinear": SensibleRectilinearGrid,
     "unstructured": SensibleUnstructuredGrid,
+    "scalar": SensibleScalarGrid,
+    "vector": SensibleScalarGrid,
 }
 
 

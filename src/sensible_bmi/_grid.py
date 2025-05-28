@@ -7,15 +7,17 @@ import pprint
 import numpy as np
 from bmipy.bmi import Bmi
 from numpy.typing import NDArray
+from sensible_bmi._validators import validate_grid_rank
+from sensible_bmi._validators import validate_grid_type
 
 
 class SensibleGrid:
     def __init__(self, bmi: Bmi, grid: int):
-        self._id = grid
-        self._rank = bmi.get_grid_rank(grid)
-        self._type = bmi.get_grid_type(grid)
-
         self._bmi = bmi
+        self._id = grid
+
+        self._rank = validate_grid_rank(bmi.get_grid_rank(grid))
+        self._type = validate_grid_type(bmi.get_grid_type(grid))
 
     @property
     def id(self) -> int:

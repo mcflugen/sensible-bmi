@@ -46,6 +46,16 @@ def test_var(cls):
     assert var.size == 5
 
 
+@pytest.mark.parametrize(
+    "cls", (SensibleInputOutputVar, SensibleOutputVar, SensibleInputVar)
+)
+def test_var_without_grid(cls):
+    var = cls(bmi_var(np.ones(5), location="none"), "foo")
+
+    assert var.location is None
+    assert var.grid is None
+
+
 @pytest.mark.parametrize("cls", (SensibleInputOutputVar, SensibleOutputVar))
 @pytest.mark.parametrize(
     "dtype", ("float", "int", "uint", "uint8", "f4,i2", "f", "B", "bool", "complex")

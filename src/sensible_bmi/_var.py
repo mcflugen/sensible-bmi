@@ -28,7 +28,11 @@ class SensibleVar:
         self._name = name
         self._units = bmi.get_var_units(name)
         self._location = bmi.get_var_location(name)
-        self._grid = None if self._location == "none" else bmi.get_var_grid(name)
+        if self._location == "none":
+            self._location = None
+            self._grid = None
+        else:
+            self._grid = bmi.get_var_grid(name)
         self._itemsize = bmi.get_var_itemsize(name)
         self._type = _normalize_dtype(bmi.get_var_type(name), self._itemsize)
         self._nbytes = bmi.get_var_nbytes(name)
@@ -45,7 +49,7 @@ class SensibleVar:
         return self._units
 
     @property
-    def location(self) -> str:
+    def location(self) -> str | None:
         return self._location
 
     @property

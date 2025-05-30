@@ -30,17 +30,25 @@ def validate_var_dtype(dtype: str, itemsize: int) -> str:
     return normed_dtype
 
 
-def _normalize_dtype(dtype: str, itemsize: int) -> str:
+def _normalize_dtype(dtype: str, itemsize: int | None = None) -> str:
     fields = [field.strip() for field in dtype.split(",")]
-    if len(fields) == 1:
-        dtype = fields[0]
-        if dtype in ("float", "complex", "int", "uint"):
-            dtype = f"{dtype}{itemsize * 8}"
-        elif dtype in ("f", "i"):
-            dtype = f"{dtype}{itemsize}"
-        return str(np.dtype(dtype))
-    else:
+    if len(fields) > 1:
         return ", ".join(_normalize_dtype(field, itemsize) for field in fields)
+
+    dtype = fields[0]
+    if itemsize is None:
+        return str(np.dtype(dtype))
+
+    type_map = {
+        "float": f"float{itemsize * 8}",
+        "complex": f"complex{itemsize * 8}",
+        "int": f"int{itemsize * 8}",
+        "uint": f"uint{itemsize * 8}",
+        "f": f"f{itemsize}",
+        "i": f"i{itemsize}",
+    }
+
+    return str(np.dtype(type_map.get(dtype, dtype)))
 
 
 def validate_var_location(location: str) -> str:

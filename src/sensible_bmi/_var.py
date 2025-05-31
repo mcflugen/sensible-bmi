@@ -8,37 +8,25 @@ import numpy as np
 from bmipy.bmi import Bmi
 from numpy.typing import ArrayLike
 from numpy.typing import NDArray
-
-
-def _normalize_dtype(dtype: str, itemsize: int) -> str:
-    fields = [field.strip() for field in dtype.split(",")]
-    if len(fields) == 1:
-        dtype = fields[0]
-        if dtype in ("float", "complex", "int", "uint"):
-            dtype = f"{dtype}{itemsize * 8}"
-        elif dtype in ("f", "i"):
-            dtype = f"{dtype}{itemsize}"
-        return str(np.dtype(dtype))
-    else:
-        return ", ".join(str(np.dtype(field)) for field in fields)
+from sensible_bmi._validators import validate_var_dtype
+from sensible_bmi._validators import validate_var_itemsize
+from sensible_bmi._validators import validate_var_location
+from sensible_bmi._validators import validate_var_nbytes
 
 
 class SensibleVar:
     def __init__(self, bmi: Bmi, name: str):
-        self._name = name
-        self._units = bmi.get_var_units(name)
-        self._location = bmi.get_var_location(name)
-        if self._location == "none":
-            self._location = None
-            self._grid = None
-        else:
-            self._grid = bmi.get_var_grid(name)
-        self._itemsize = bmi.get_var_itemsize(name)
-        self._type = _normalize_dtype(bmi.get_var_type(name), self._itemsize)
-        self._nbytes = bmi.get_var_nbytes(name)
-        self._size = self._nbytes // self._itemsize
-
         self._bmi = bmi
+        self._name = name
+
+        self._units = bmi.get_var_units(name)
+        location_str = validate_var_location(bmi.get_var_location(name))
+        self._location = None if location_str == "none" else location_str
+        self._grid = None if location_str == "none" else bmi.get_var_grid(name)
+        self._itemsize = validate_var_itemsize(bmi.get_var_itemsize(name))
+        self._type = validate_var_dtype(bmi.get_var_type(name), self._itemsize)
+        self._nbytes = validate_var_nbytes(bmi.get_var_nbytes(name))
+        self._size = self._nbytes // self._itemsize
 
     @property
     def name(self) -> str:

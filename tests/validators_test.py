@@ -113,6 +113,21 @@ def test_validate_var_dtype_valid(dtype, itemsize, expected):
 
 
 @pytest.mark.parametrize(
+    "dtype",
+    [
+        *("float", "float32", "float64"),
+        *("f", "f4", "f8"),
+        *("int", "int8", "int16", "int32", "uint", "uint8", "uint16"),
+        *("i", "i2", "i4"),
+        *("complex", "complex64", "complex128"),
+        *("f4, i2", "float, float", "float, double"),
+    ],
+)
+def test_validate_var_with_default_itemsize(dtype):
+    assert np.dtype(validate_var_dtype(dtype)) == np.dtype(dtype)
+
+
+@pytest.mark.parametrize(
     "dtype,itemsize", [(None, 4), (123, 4), ([], 4), (np.float64, 8)]
 )
 def test_validate_var_dtype_type_error(dtype, itemsize):

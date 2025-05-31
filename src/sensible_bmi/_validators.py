@@ -16,7 +16,7 @@ VALID_GRID_TYPES = frozenset(
 )
 
 
-def validate_var_dtype(dtype: str, itemsize: int) -> str:
+def validate_var_dtype(dtype: str, itemsize: int | None = None) -> str:
     if not isinstance(dtype, str):
         raise TypeError(f"dtype must be a string, got {type(dtype).__name__}")
 

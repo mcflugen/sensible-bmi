@@ -1,3 +1,9 @@
 from __future__ import annotations
 
-__version__ = "0.1.0"
+from importlib.metadata import PackageNotFoundError
+from importlib.metadata import version
+
+try:
+    __version__ = version("sensible-bmi")
+except PackageNotFoundError:  # pragma: no cover
+    __version__ = "unknown"

@@ -3,7 +3,6 @@ from __future__ import annotations
 import numpy as np
 from sensible_bmi._errors import ValidationError
 
-
 VALID_VAR_LOCATIONS = frozenset({"node", "edge", "face", "none"})
 VALID_GRID_TYPES = frozenset(
     {

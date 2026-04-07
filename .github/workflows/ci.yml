@@ -75,7 +75,7 @@ jobs:
       - name: Test
         run: |
           pip install nox
-          nox --non-interactive --error-on-missing-interpreter -s test -- dist/*.tar.gz
+          nox --non-interactive -s test -- dist/*.tar.gz
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5

@@ -37,6 +37,7 @@ def make_sensible(class_name: str, bmi_class: type[Bmi]) -> type[SensibleBmi]:
 
 class SensibleBmi:
     _cls: type[Bmi] | None = None
+    _is_initialized: bool = False
 
     def __init__(self) -> None:
         if self._cls is None:

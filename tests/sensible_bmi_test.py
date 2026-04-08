@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import pytest
 from sensible_bmi._errors import ValidationError
-from sensible_bmi.sensible_bmi import SensibleBmi
 from sensible_bmi.sensible_bmi import make_sensible
+from sensible_bmi.sensible_bmi import SensibleBmi
 
 from tests.utils import DummyBmi
 

@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import contextlib
 import os
+from collections.abc import Generator
 from types import MappingProxyType
 
 from bmipy.bmi import Bmi
@@ -8,7 +10,6 @@ from sensible_bmi._errors import SensibleError
 from sensible_bmi._grid import sensible_grid
 from sensible_bmi._grid import SensibleGrid
 from sensible_bmi._time import SensibleTime
-from sensible_bmi._utils import as_cwd
 from sensible_bmi._utils import is_initialized_or_raise
 from sensible_bmi._var import SensibleInputOutputVar
 from sensible_bmi._var import SensibleInputVar
@@ -127,7 +128,7 @@ class SensibleBmi:
         except AttributeError:
             pass
         else:
-            with as_cwd(self._initdir):
+            with _as_cwd(self._initdir):
                 self.bmi.finalize()
             del self._initdir
 
@@ -171,3 +172,13 @@ class SensibleBmi:
     def output_var_names(self) -> frozenset[str]:
         """List of the output variables."""
         return self._output_var_names
+
+
+@contextlib.contextmanager
+def _as_cwd(path: str) -> Generator[None]:
+    prev_cwd = os.getcwd()
+    os.chdir(path)
+    try:
+        yield
+    finally:
+        os.chdir(prev_cwd)

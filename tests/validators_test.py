@@ -3,6 +3,8 @@ from __future__ import annotations
 import numpy as np
 import pytest
 from sensible_bmi._errors import ValidationError
+from sensible_bmi._validators import require_initialized
+from sensible_bmi._validators import require_not_initialized
 from sensible_bmi._validators import VALID_GRID_TYPES
 from sensible_bmi._validators import VALID_VAR_LOCATIONS
 from sensible_bmi._validators import validate_grid_rank
@@ -11,6 +13,30 @@ from sensible_bmi._validators import validate_var_dtype
 from sensible_bmi._validators import validate_var_itemsize
 from sensible_bmi._validators import validate_var_location
 from sensible_bmi._validators import validate_var_nbytes
+
+
+def test_require_initialized():
+    class Bar:
+        _is_initialized = True
+
+    foo = Bar()
+    actual = require_initialized(foo)
+    assert actual is foo
+
+    with pytest.raises(ValidationError, match="Bar must not be initialized"):
+        require_not_initialized(foo)
+
+
+def test_require_not_initialized():
+    class Bar:
+        _is_initialized = False
+
+    foo = Bar()
+    actual = require_not_initialized(foo)
+    assert actual is foo
+
+    with pytest.raises(ValidationError, match="Bar must be initialized"):
+        require_initialized(foo)
 
 
 @pytest.mark.parametrize("value", (1, 10, 100))

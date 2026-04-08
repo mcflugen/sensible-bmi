@@ -79,7 +79,7 @@ class SensibleBmi:
             where = "." if where is None else where
 
         init_dir = os.path.abspath(where)
-        with as_cwd(init_dir):
+        with _as_cwd(init_dir):
             self.bmi.initialize(filepath)
 
         self._name = self.bmi.get_component_name()
@@ -118,7 +118,7 @@ class SensibleBmi:
     @is_initialized_or_raise
     def update(self) -> None:
         """Update the component by a single time step."""
-        with as_cwd(self._initdir):
+        with _as_cwd(self._initdir):
             return self.bmi.update()
 
     def finalize(self) -> None:

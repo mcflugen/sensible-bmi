@@ -6,11 +6,11 @@ from collections.abc import Generator
 from types import MappingProxyType
 
 from bmipy.bmi import Bmi
-from sensible_bmi._errors import SensibleError
 from sensible_bmi._grid import sensible_grid
 from sensible_bmi._grid import SensibleGrid
 from sensible_bmi._time import SensibleTime
-from sensible_bmi._utils import is_initialized_or_raise
+from sensible_bmi._validators import require_initialized
+from sensible_bmi._validators import require_not_initialized
 from sensible_bmi._var import SensibleInputOutputVar
 from sensible_bmi._var import SensibleInputVar
 from sensible_bmi._var import SensibleOutputVar
@@ -52,6 +52,8 @@ class SensibleBmi:
         self._input_var_names: frozenset[str]
         self._output_var_names: frozenset[str]
 
+        self._is_initialized = False
+
     def initialize(self, filepath: str | None = None, where: str | None = ".") -> None:
         """Initialize component for timestepping.
 
@@ -64,12 +66,7 @@ class SensibleBmi:
             provided, use the folder in which *filepath* sits. If *filepath* is also
             not provided, use the current working directory.
         """
-        if hasattr(self, "_initdir"):
-            raise SensibleError(
-                "Unable to initialize. Component is already initialized."
-                " If you would like to re-initialize this component, try"
-                " calling finalize() and then calling initialize()."
-            )
+        require_not_initialized(self)
 
         filepath = "" if filepath is None else os.path.abspath(filepath)
 
@@ -115,9 +112,11 @@ class SensibleBmi:
         self._time = SensibleTime(self._bmi)
         self._initdir = init_dir
 
-    @is_initialized_or_raise
+        self._is_initialized = True
+
     def update(self) -> None:
         """Update the component by a single time step."""
+        require_initialized(self)
         with _as_cwd(self._initdir):
             return self.bmi.update()
 
@@ -131,6 +130,7 @@ class SensibleBmi:
             with _as_cwd(self._initdir):
                 self.bmi.finalize()
             del self._initdir
+        self._is_initialized = False
 
     @property
     def bmi(self) -> Bmi:
@@ -138,39 +138,39 @@ class SensibleBmi:
         return self._bmi
 
     @property
-    @is_initialized_or_raise
     def name(self) -> str:
         """Name of the component."""
+        require_initialized(self)
         return self._name
 
     @property
-    @is_initialized_or_raise
     def grid(self) -> MappingProxyType[int, SensibleGrid]:
         """Descriptions of the component's grids."""
+        require_initialized(self)
         return self._grid
 
     @property
-    @is_initialized_or_raise
     def var(self) -> MappingProxyType[str, SensibleVar]:
         """The component's input and output variables."""
+        require_initialized(self)
         return self._var
 
     @property
-    @is_initialized_or_raise
     def time(self) -> SensibleTime:
         """Time information about the component."""
+        require_initialized(self)
         return self._time
 
     @property
-    @is_initialized_or_raise
     def input_var_names(self) -> frozenset[str]:
         """List of the input variables."""
+        require_initialized(self)
         return self._input_var_names
 
     @property
-    @is_initialized_or_raise
     def output_var_names(self) -> frozenset[str]:
         """List of the output variables."""
+        require_initialized(self)
         return self._output_var_names
 
 

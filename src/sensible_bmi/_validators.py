@@ -1,7 +1,14 @@
 from __future__ import annotations
 
+from typing import Protocol
+
 import numpy as np
 from sensible_bmi._errors import ValidationError
+
+
+class _HasIsInitialized(Protocol):
+    _is_initialized: bool
+
 
 VALID_VAR_LOCATIONS = frozenset({"node", "edge", "face", "none"})
 VALID_GRID_TYPES = frozenset(
@@ -13,6 +20,24 @@ VALID_GRID_TYPES = frozenset(
         "unstructured",
     }
 )
+
+
+def require_initialized[T: _HasIsInitialized](obj: T) -> T:
+    if obj._is_initialized:
+        return obj
+    raise ValidationError(
+        f"{obj.__class__.__name__} must be initialized."
+        " Did you forget to call initialize()?"
+    ) from None
+
+
+def require_not_initialized[T: _HasIsInitialized](obj: T) -> T:
+    if not obj._is_initialized:
+        return obj
+    raise ValidationError(
+        f"{obj.__class__.__name__} must not be initialized."
+        " If you want to reinitialize, call finalize() first."
+    ) from None
 
 
 def validate_var_dtype(dtype: str, itemsize: int | None = None) -> str:

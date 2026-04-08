@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import numpy as np
 from sensible_bmi._errors import ValidationError
+from sensible_bmi.sensible_bmi import SensibleBmi
 
 VALID_VAR_LOCATIONS = frozenset({"node", "edge", "face", "none"})
 VALID_GRID_TYPES = frozenset(
@@ -13,6 +14,24 @@ VALID_GRID_TYPES = frozenset(
         "unstructured",
     }
 )
+
+
+def require_initialized(obj: SensibleBmi) -> SensibleBmi:
+    if obj._is_initialized:
+        return obj
+    raise ValidationError(
+        f"{obj.__class__.__name__} must be initialized."
+        " Did you forget to call initialize()?"
+    ) from None
+
+
+def require_not_initialized(obj: SensibleBmi) -> SensibleBmi:
+    if not obj._is_initialized:
+        return obj
+    raise ValidationError(
+        f"{obj.__class__.__name__} must not be initialized."
+        " If you want to reinitialize, call finalize() first."
+    ) from None
 
 
 def validate_var_dtype(dtype: str, itemsize: int | None = None) -> str:

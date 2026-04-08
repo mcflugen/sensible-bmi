@@ -8,10 +8,9 @@ import numpy as np
 from bmipy.bmi import Bmi
 from numpy.typing import ArrayLike
 from numpy.typing import NDArray
+from sensible_bmi._validators import validate_positive_integer
 from sensible_bmi._validators import validate_var_dtype
-from sensible_bmi._validators import validate_var_itemsize
 from sensible_bmi._validators import validate_var_location
-from sensible_bmi._validators import validate_var_nbytes
 
 
 class SensibleVar:
@@ -23,9 +22,13 @@ class SensibleVar:
         location_str = validate_var_location(bmi.get_var_location(name))
         self._location = None if location_str == "none" else location_str
         self._grid = None if location_str == "none" else bmi.get_var_grid(name)
-        self._itemsize = validate_var_itemsize(bmi.get_var_itemsize(name))
+        self._itemsize = validate_positive_integer(
+            bmi.get_var_itemsize(name), name="itemsize"
+        )
         self._type = validate_var_dtype(bmi.get_var_type(name), self._itemsize)
-        self._nbytes = validate_var_nbytes(bmi.get_var_nbytes(name))
+        self._nbytes = validate_positive_integer(
+            bmi.get_var_nbytes(name), name="nbytes"
+        )
         self._size = self._nbytes // self._itemsize
 
     @property

@@ -1,8 +1,14 @@
 from __future__ import annotations
 
+from typing import Protocol
+
 import numpy as np
 from sensible_bmi._errors import ValidationError
-from sensible_bmi.sensible_bmi import SensibleBmi
+
+
+class _HasIsInitialized(Protocol):
+    _is_initialized: bool
+
 
 VALID_VAR_LOCATIONS = frozenset({"node", "edge", "face", "none"})
 VALID_GRID_TYPES = frozenset(
@@ -16,7 +22,7 @@ VALID_GRID_TYPES = frozenset(
 )
 
 
-def require_initialized(obj: SensibleBmi) -> SensibleBmi:
+def require_initialized[T: _HasIsInitialized](obj: T) -> T:
     if obj._is_initialized:
         return obj
     raise ValidationError(
@@ -25,7 +31,7 @@ def require_initialized(obj: SensibleBmi) -> SensibleBmi:
     ) from None
 
 
-def require_not_initialized(obj: SensibleBmi) -> SensibleBmi:
+def require_not_initialized[T: _HasIsInitialized](obj: T) -> T:
     if not obj._is_initialized:
         return obj
     raise ValidationError(

@@ -7,8 +7,8 @@ import pprint
 import numpy as np
 from bmipy.bmi import Bmi
 from numpy.typing import NDArray
-from sensible_bmi._validators import validate_grid_rank
 from sensible_bmi._validators import validate_grid_type
+from sensible_bmi._validators import validate_positive_integer
 
 
 class SensibleGrid:
@@ -16,7 +16,7 @@ class SensibleGrid:
         self._bmi = bmi
         self._id = grid
 
-        self._rank = validate_grid_rank(bmi.get_grid_rank(grid))
+        self._rank = validate_positive_integer(bmi.get_grid_rank(grid), name="rank")
         self._type = validate_grid_type(bmi.get_grid_type(grid))
 
     @property

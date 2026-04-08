@@ -5,25 +5,24 @@ import pytest
 from sensible_bmi._errors import ValidationError
 from sensible_bmi._validators import VALID_GRID_TYPES
 from sensible_bmi._validators import VALID_VAR_LOCATIONS
-from sensible_bmi._validators import validate_grid_rank
 from sensible_bmi._validators import validate_grid_type
+from sensible_bmi._validators import validate_positive_integer
 from sensible_bmi._validators import validate_var_dtype
-from sensible_bmi._validators import validate_var_itemsize
 from sensible_bmi._validators import validate_var_location
-from sensible_bmi._validators import validate_var_nbytes
 
 
 @pytest.mark.parametrize("value", (1, 10, 100))
-def test_grid_rank(value):
-    assert validate_grid_rank(value) == value
+def test_positive_integer(value):
+    assert validate_positive_integer(value) == value
 
 
 @pytest.mark.parametrize(
-    "value, err", ((0, ValidationError), (-1, ValidationError), (1.0, TypeError))
+    "value, err",
+    ((0, ValidationError), (-1, ValidationError), (1.0, TypeError), (True, TypeError)),
 )
-def test_grid_rank_bad_value(value, err):
-    with pytest.raises(err):
-        validate_grid_rank(value)
+def test_positive_integer_bad_value(value, err):
+    with pytest.raises(err, match="foo must be"):
+        validate_positive_integer(value, name="foo")
 
 
 @pytest.mark.parametrize(
@@ -33,46 +32,10 @@ def test_grid_type(value):
     assert validate_grid_type(value) == value.lower()
 
 
-@pytest.mark.parametrize("value", ("foo", ""))
+@pytest.mark.parametrize("value", ("foo", "", 1))
 def test_grid_type_bad_value(value):
     with pytest.raises(ValidationError):
         validate_grid_type(value)
-
-
-@pytest.mark.parametrize("value", (1, 10, 100))
-def test_var_nbytes(value):
-    assert validate_var_nbytes(value) == value
-
-
-@pytest.mark.parametrize(
-    "value, err",
-    (
-        (0, ValidationError),
-        (-1, ValidationError),
-        (1.0, TypeError),
-    ),
-)
-def test_var_nbytes_bad_value(value, err):
-    with pytest.raises(err):
-        validate_var_nbytes(value)
-
-
-@pytest.mark.parametrize("value", (1, 10, 100))
-def test_var_itemsize(value):
-    assert validate_var_itemsize(value) == value
-
-
-@pytest.mark.parametrize(
-    "value, err",
-    (
-        (0, ValidationError),
-        (-1, ValidationError),
-        (1.0, TypeError),
-    ),
-)
-def test_var_itemsize_bad_value(value, err):
-    with pytest.raises(err):
-        validate_var_itemsize(value)
 
 
 @pytest.mark.parametrize(
@@ -82,7 +45,7 @@ def test_var_location(value):
     assert validate_var_location(value) == value.lower()
 
 
-@pytest.mark.parametrize("value", ("foo", ""))
+@pytest.mark.parametrize("value", ("foo", "", 1))
 def test_var_location_bad_value(value):
     with pytest.raises(ValidationError):
         validate_var_location(value)
@@ -136,7 +99,8 @@ def test_validate_var_dtype_type_error(dtype, itemsize):
 
 
 @pytest.mark.parametrize(
-    "dtype,itemsize", [("nonsense", 4), ("badtype, float32", 4), ("i7", 1)]
+    "dtype,itemsize",
+    [("nonsense", 4), ("badtype, float32", 4), ("i7", 1), ("float, , int", 4)],
 )
 def test_validate_var_dtype_validation_error(dtype, itemsize):
     with pytest.raises(ValidationError):

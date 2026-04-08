@@ -32,6 +32,7 @@ classifiers = [
 dependencies = [
     "bmipy",
     "numpy",
+    "requireit",
 ]
 dynamic = [
     "readme",
